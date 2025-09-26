@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Essay Scoring App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-3xl">
+        <h1 class="text-3xl font-bold mb-6 text-center text-indigo-600">Essay Scoring App</h1>
+
+        <form method="post" class="space-y-6">
+            <!-- Prompt -->
+            <div>
+                <label for="prompt" class="block text-lg font-medium mb-2">Prompt</label>
+                <textarea name="prompt" rows="2"
+                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400">{{ prompt if prompt else '' }}</textarea>
+            </div>
+
+            <!-- Essay -->
+            <div>
+                <label for="essay" class="block text-lg font-medium mb-2">Essay</label>
+                <textarea name="essay" rows="8"
+                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400">{{ essay if essay else '' }}</textarea>
+            </div>
+
+            <!-- Submit button -->
+            <div class="text-center">
+                <button type="submit"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">
+                    Submit Essay
+                </button>
+            </div>
+        </form>
+
+        {% if finalScore is defined %}
+        <!-- Results -->
+        <div class="mt-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-700">Results</h2>
+            <p class="mb-2"><strong>Content Score:</strong> {{ contentScore }}/10</p>
+            <p class="mb-2"><strong>Grammar Score:</strong> {{ grammarScore }}/10</p>
+            <p class="text-lg font-bold"><strong>Final Score:</strong> {{ finalScore }}/10</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
