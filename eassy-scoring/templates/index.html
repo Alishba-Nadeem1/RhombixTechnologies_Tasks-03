@@ -1,47 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Essay Scoring App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScoreIQ — Essay Scorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --surface2: #22222c;
+      --border: #2e2e3a;
+      --accent: #7c6dfa;
+      --accent2: #a78bfa;
+      --text: #f0f0f5;
+      --muted: #8888a0;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent2), #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .field {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 14px 16px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea::placeholder { color: var(--muted); }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn:active { transform: scale(0.99); }
+
+    .results {
+      margin-top: 36px;
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+    }
+
+    .results-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .scores-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .score-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .score-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .score-denom {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .score-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.8s ease;
+    }
+
+    .final-card {
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .final-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .final-badge {
+      font-family: 'Sora', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent2), #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .verdict {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .word-count {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 6px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen">
-    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-3xl">
-        <h1 class="text-3xl font-bold mb-6 text-center text-indigo-600">Essay Scoring App</h1>
+<body>
 
-        <form method="post" class="space-y-6">
-            <!-- Prompt -->
-            <div>
-                <label for="prompt" class="block text-lg font-medium mb-2">Prompt</label>
-                <textarea name="prompt" rows="2"
-                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400">{{ prompt if prompt else '' }}</textarea>
-            </div>
-
-            <!-- Essay -->
-            <div>
-                <label for="essay" class="block text-lg font-medium mb-2">Essay</label>
-                <textarea name="essay" rows="8"
-                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400">{{ essay if essay else '' }}</textarea>
-            </div>
-
-            <!-- Submit button -->
-            <div class="text-center">
-                <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">
-                    Submit Essay
-                </button>
-            </div>
-        </form>
-
-        {% if finalScore is defined %}
-        <!-- Results -->
-        <div class="mt-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
-            <h2 class="text-2xl font-semibold mb-4 text-indigo-700">Results</h2>
-            <p class="mb-2"><strong>Content Score:</strong> {{ contentScore }}/10</p>
-            <p class="mb-2"><strong>Grammar Score:</strong> {{ grammarScore }}/10</p>
-            <p class="text-lg font-bold"><strong>Final Score:</strong> {{ finalScore }}/10</p>
-        </div>
-        {% endif %}
+  <header>
+    <div class="logo">
+      <div class="logo-icon">✦</div>
+      <span class="logo-text">ScoreIQ</span>
     </div>
+    <p>AI-powered essay evaluation — grammar, content & relevance</p>
+  </header>
+
+  <div class="card">
+    <form method="post" id="essayForm">
+
+      <div class="field">
+        <label>Essay Prompt</label>
+        <textarea name="prompt" rows="2" placeholder="e.g. Write about the impact of technology on education…">{{ prompt if prompt else '' }}</textarea>
+      </div>
+
+      <div class="field">
+        <label>Your Essay</label>
+        <textarea name="essay" rows="10" id="essayInput" placeholder="Start writing your essay here…" oninput="updateCount(this)">{{ essay if essay else '' }}</textarea>
+        <div class="word-count" id="wordCount">0 words</div>
+      </div>
+
+      <button type="submit" class="btn">Analyze Essay →</button>
+    </form>
+
+    {% if finalScore is defined %}
+    <div class="results">
+      <div class="results-title">Analysis Results</div>
+
+      <div class="scores-grid">
+        <div class="score-card">
+          <div class="score-label">Content Score</div>
+          <div class="score-value" style="color: {{ '#34d399' if contentScore >= 7 else '#fbbf24' if contentScore >= 4 else '#f87171' }}">
+            {{ contentScore }}<span class="score-denom">/10</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-fill" style="width: {{ contentScore * 10 }}%; background: {{ '#34d399' if contentScore >= 7 else '#fbbf24' if contentScore >= 4 else '#f87171' }};"></div>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-label">Grammar Score</div>
+          <div class="score-value" style="color: {{ '#34d399' if grammarScore >= 7 else '#fbbf24' if grammarScore >= 4 else '#f87171' }}">
+            {{ grammarScore }}<span class="score-denom">/10</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-fill" style="width: {{ grammarScore * 10 }}%; background: {{ '#34d399' if grammarScore >= 7 else '#fbbf24' if grammarScore >= 4 else '#f87171' }};"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="final-card">
+        <div class="final-label">Final Score</div>
+        <div class="final-badge">{{ finalScore }} / 10</div>
+      </div>
+
+      <div class="verdict">
+        {% if finalScore >= 8 %}
+          Excellent work! Your essay demonstrates strong writing skills.
+        {% elif finalScore >= 6 %}
+          Good effort! A few improvements can make this essay stronger.
+        {% elif finalScore >= 4 %}
+          Average. Focus on grammar and expanding your content.
+        {% else %}
+          Needs improvement. Try to write more and review grammar carefully.
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    function updateCount(el) {
+      const words = el.value.trim().split(/\s+/).filter(w => w).length;
+      document.getElementById('wordCount').textContent = words + ' word' + (words !== 1 ? 's' : '');
+    }
+    const essay = document.getElementById('essayInput');
+    if (essay && essay.value) updateCount(essay);
+  </script>
+
 </body>
 </html>
